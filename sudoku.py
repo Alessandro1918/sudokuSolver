@@ -1,6 +1,5 @@
 class Sudoku():
 
-    #def __init__(self, height=9, width=9):
     def __init__(self, board, height=9, width=9):
 
         # Set initial width, height
@@ -100,7 +99,7 @@ class Sudoku():
         return values
 
 
-    # Returns a list of values  this cell CAN have
+    # Returns a list of values this cell CAN have
     def getCellPossibles(self, i, j):
 
         # Cell is filled
@@ -202,23 +201,23 @@ class Sudoku():
             #for each section - any cell from that section could have a value that no other cell in that section could have?
             # example with 2.txt, section 2: only cell (0, 8) in this section could have the value 6
             cells = [(0, 0), (0, 3), (0, 6), (3, 0), (3, 3), (3, 6), (6, 0), (6, 3), (6, 6)]    #the first cell of each section
-            for s in range(9):
-                i = cells[s][0]
-                j = cells[s][1]
+            for s in range(9):       # section 2 starts @ cell (0, 6)
+                i = cells[s][0]      # i = 0
+                j = cells[s][1]      # j = 6
                 section = self.getSectionPossibles(i, j)
-                #print(s, section)   # section 2: [[], [1, 5, 6, 7], [6], [1, 5], [], [], [], [1, 7], []]
+                #print(s, section)   # section 2: [[], [1, 5, 7], [1, 5, 6, 7], [1, 5], [], [], [], [1, 7], []]
                 counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 for m in section:
                     for n in m:
                         counts[n-1]+=1
-                #print(s, counts)    # section 2: [3, 0, 0, 0, 2, 1, 2, 0, 0]
+                #print(s, counts)    # section 2: [4, 0, 0, 0, 3, 1, 1, 0, 0]
                 for c in counts:
                     if c == 1:                      # counts[5] = 1
                         v = counts.index(c) + 1     # singleValue = 5+1 = 6
                         for k in range(9):          # which element from that section can be a 6?
                             if v in section[k]:     # section[2] contains a 6 -> k=2 (meaning it's the third cell from that section)
-                                ii = int(i + k / 3) # i=0 -> ii = 0+2/3 = 0
-                                jj = j + k % 3      # j=6 -> ii = 6+2%3 = 8
+                                ii = int(i + k / 3) # i = 0 -> ii = 0+2/3 = 0
+                                jj = j + k % 3      # j = 6 -> jj = 6+2%3 = 8
                                 self.write(ii, jj, v)
                                 newValues+=1
 
