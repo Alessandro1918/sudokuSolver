@@ -1,18 +1,21 @@
-# sudokuSolver
+# :video_game: sudokuSolver
 A Python script to solve Sudoku games!
 
 <p align="center">
   <img alt="printscreen from terminal" width="250px" src="./printscreen.png" />
 <p>
 
-## Intro
+
+## :clipboard: Intro
 Get a Sudoku game from a txt file (some games available is this repo "data" directory), and run the script that will try to solve it!
 
-## How to run it
 
-- ### **Requirements**
+## :hammer_and_wrench: Requirements
 
   - [Python 3.x](https://www.python.org/downloads/)
+  
+  
+## :arrow_forward: How to run it
   
 1. Clone this repository:
 
