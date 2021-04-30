@@ -31,7 +31,9 @@ class Sudoku():
 
             for j in range(self.width):
                 if self.board[i][j]:
-                    #print(f" {self.board[i][j]} ", end="") #V1 - no color
+                    #V1 - no color
+                    #print(f" {self.board[i][j]} ", end="")
+                    #V2 - colored
                     if (i, j) in self.added:
                         print(CRED + f" {self.board[i][j]} " + CEND, end="")
                     else:
@@ -102,10 +104,10 @@ class Sudoku():
     # Returns a list of values this cell CAN have
     def getCellPossibles(self, i, j):
 
-        # Cell is filled
+        # Cell has value (given or figured out)
         if self.board[i][j]:
-            #return [self.board[i][j]]      # given value; do not highlight
-            return []                       # solve will ignore this cell
+            #return [self.board[i][j]]      # V1 - return that value
+            return []                       # V2 - given or figured out, nothing more to do with this cell
 
         # Remove from a complete list the values I know to be impossible
         values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -154,26 +156,27 @@ class Sudoku():
             newValues = 0
 
             # Method 1 - Naked singles
-            #for each cell - check if it can have just one possible value
+            # for each cell - check if it can have just one possible value
             for i in range(self.height):
                 for j in range(self.width):
                     values = self.getCellPossibles(i, j)
-                    #print(f"{k}: Values for ({i}, {j}): {values}")
+                    #print(f"{iterations}: Values for ({i}, {j}): {values}")
                     if len(values) == 1:
                         self.write(i, j, values[0])
                         newValues+=1
             
             # Method 2 - Single value in the area (row, collumn, section)
-            #for each row - any cell from that row could have a value that no other cell in that row could have?
+            
+            # 2.1: for each row - any cell from that row could have a value that no other cell in that row could have?
             # example with 2.txt, row 2: only cell (2, 5) in this row could have the value 4
             for i in range(self.height):
                 row = self.getRowPossibles(i)
-                #print(i, row)      # row 2: [[1, 8], [], [7, 8], [], [], [1, 4], [], [1, 7], []]
+                #print(f"row {i}: {row}")      # row 2: [[1, 8], [], [7, 8], [], [], [1, 4], [], [1, 7], []]
                 counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 for m in row:
                     for n in m:
                         counts[n-1]+=1
-                #print(i, counts)   # row 2: [3, 0, 0, 1, 0, 0, 2, 2, 0] -> 3 times the #1, 0 times the #2, ...
+                #print(f"row {i}: {counts}")   # row 2: [3, 0, 0, 1, 0, 0, 2, 2, 0] -> 3 times the #1, 0 times the #2, ...
                 for c in counts:                    # any value was counted just once?
                     if c == 1:                      # counts[3] == 1
                         v = counts.index(c) + 1     # singleValue = 3+1 = 4
@@ -183,7 +186,7 @@ class Sudoku():
                                 self.write(i, j, v) # i=2, j=5, v=4
                                 newValues+=1
 
-            #for each collumn - any cell from that collumn could have a value that no other cell in that collumn could have?
+            # 2.2: for each collumn - any cell from that collumn could have a value that no other cell in that collumn could have?
             for j in range(self.width):
                 collumn = self.getCollumnPossibles(j)
                 counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -198,19 +201,19 @@ class Sudoku():
                                 self.write(i, j, v)
                                 newValues+=1
 
-            #for each section - any cell from that section could have a value that no other cell in that section could have?
+            # 2.3: for each section - any cell from that section could have a value that no other cell in that section could have?
             # example with 2.txt, section 2: only cell (0, 8) in this section could have the value 6
             cells = [(0, 0), (0, 3), (0, 6), (3, 0), (3, 3), (3, 6), (6, 0), (6, 3), (6, 6)]    #the first cell of each section
             for s in range(9):       # section 2 starts @ cell (0, 6)
                 i = cells[s][0]      # i = 0
                 j = cells[s][1]      # j = 6
                 section = self.getSectionPossibles(i, j)
-                #print(s, section)   # section 2: [[], [1, 5, 7], [1, 5, 6, 7], [1, 5], [], [], [], [1, 7], []]
+                #print(f"section {s}: {section}")   # section 2: [[], [1, 5, 7], [1, 5, 6, 7], [1, 5], [], [], [], [1, 7], []]
                 counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 for m in section:
                     for n in m:
                         counts[n-1]+=1
-                #print(s, counts)    # section 2: [4, 0, 0, 0, 3, 1, 1, 0, 0]
+                #print(f"section {s}: {counts}")    # section 2: [4, 0, 0, 0, 3, 1, 1, 0, 0]
                 for c in counts:
                     if c == 1:                      # counts[5] = 1
                         v = counts.index(c) + 1     # singleValue = 5+1 = 6
